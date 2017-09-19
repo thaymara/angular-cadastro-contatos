@@ -30,7 +30,7 @@ export class ContatoDetalheComponent implements OnInit{
 
             if(id){
                 this.isNew = false;
-                this.contatoService.find(id)
+                this.contatoService.getContato(id)
                 .then((contato:Contato) =>{
                     this.contato = contato;
                 });
@@ -64,10 +64,6 @@ export class ContatoDetalheComponent implements OnInit{
             promise = this.contatoService.update(this.contato);
         }
 
-        promise.then(contato => this.goBack()); //volta para a pagina anterior
-    }
-
-    goBack(): void{
-        this.location.back();
+        promise.then(contato => this.location.back()); //volta para a pagina anterior
     }
 }

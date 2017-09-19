@@ -12,10 +12,9 @@ import { DialogService } from "../dialog.service";
 })
 
 export class ContatosListaComponent implements OnInit{
-    contatos: Contato[] = [];
+    contatos: Contato[];
     mensagem:{};
     classesCss: {};
-    private currentTime: any;
 
     constructor(
         private contatoService: ContatoService,
@@ -25,7 +24,7 @@ export class ContatosListaComponent implements OnInit{
     }
 
     ngOnInit(): void{
-        this.contatoService.findAll()
+        this.contatoService.getContatos()
             .then((contatos: Contato[]) => {
                 this.contatos = contatos;
             }).catch(err => {
@@ -68,11 +67,7 @@ export class ContatosListaComponent implements OnInit{
     private mostrarMensagem(mensagem: {tipo: string, mensagem: string}): void{
         this.mensagem = mensagem;
         this.montarClasses(mensagem.tipo);
-
-        if(this.currentTime){
-            clearTimeout(this.currentTime);
-        }
-        this.currentTime = setTimeout(() =>{
+        setTimeout(() =>{
             this.mensagem = undefined;
         }, 3000)
     }
