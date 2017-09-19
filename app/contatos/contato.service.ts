@@ -1,12 +1,15 @@
 import { Injectable } from "@angular/core";
 import { Http, Headers, Response } from "@angular/http";
+import { Observable } from "rxjs";
 import "rxjs/add/operator/toPromise";
+
+import { ServiceInterface } from "../interfaces/service.interface";
 
 import { CONTATOS } from "./contatos-mock";
 import { Contato } from "./contato.model";
 
 @Injectable()
-export class ContatoService{
+export class ContatoService implements ServiceInterface<Contato>{
 
     private contatosUrl: string = 'app/contatos';
     private header: Headers = new Headers({'Content-Type': 'application/json'});
@@ -15,7 +18,7 @@ export class ContatoService{
         private http: Http
     ){}
 
-    getContatos(): Promise<Contato[]>{
+    findAll(): Promise<Contato[]>{
         return this.http.get(this.contatosUrl)
             .toPromise()
             .then(response => response.json().data as Contato[])
@@ -23,8 +26,8 @@ export class ContatoService{
         //return Promise.resolve(CONTATOS);
     }
 
-    getContato(id: number): Promise<Contato>{
-        return this.getContatos()
+    find(id: number): Promise<Contato>{
+        return this.findAll()
             .then((contatos: Contato[]) =>{
                 return contatos.find(contato => contato.id === id)
             })
@@ -81,6 +84,12 @@ export class ContatoService{
             console.log("segundo then");
             console.log(param);
         })
-        .then(() => this.getContatos() );
+        .then(() => this.findAll() );
+    }
+
+    search(term: string): Observable<Contato[]>{
+        return this.http
+            .get(`${this.contatosUrl}/?nome=${term}`)
+            .map((res: Response) => res.json().data as Contato[]);
     }
 }
